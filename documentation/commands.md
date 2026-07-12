@@ -1,2 +1,2 @@
 # START APP
-python -m uvicorn app.main:app --reload
+python -m uvicorn backend.main:app --reload

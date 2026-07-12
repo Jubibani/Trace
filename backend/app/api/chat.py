@@ -1,30 +1,23 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
-from app.services.llm_service import LLMServiceError, llm_service
+from ..services.llm_service import LLMService
+
+router = APIRouter(tags=["chat"])
 
 
 class ChatRequest(BaseModel):
-	message: str = Field(min_length=1)
-	model: str | None = None
+	message: str = Field(min_length=1, description="User prompt for the assistant")
 
 
 class ChatResponse(BaseModel):
+	message: str
 	model: str
-	response: str
+	source: str
 
 
-router = APIRouter(prefix="/chat", tags=["chat"])
-
-
-@router.post("", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest) -> ChatResponse:
-	try:
-		result = await llm_service.chat(
-			messages=[{"role": "user", "content": request.message}],
-			model=request.model,
-		)
-	except LLMServiceError as exc:
-		raise HTTPException(status_code=502, detail=str(exc)) from exc
-
-	return ChatResponse(model=result.model, response=result.content)
+	service = LLMService()
+	result = await service.generate(request.message)
+	return ChatResponse(message=result.message, model=result.model, source=result.source)

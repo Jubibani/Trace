@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from app.api.chat import router as chat_router
-from app.api.routes.health import router as health_router
-from app.core.config import settings
+from .api.chat import router as chat_router
+from .api.routes.health import router as health_router
+from .core.config import settings
 
 
 def create_app() -> FastAPI:
