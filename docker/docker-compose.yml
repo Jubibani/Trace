@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      LCIA_ENV: development
+      LCIA_APP_NAME: Local Code Intelligence Assistant
+      LCIA_VERSION: 0.1.0
+    volumes:
+      - ../:/app
